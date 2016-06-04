@@ -1,8 +1,9 @@
 (function () {
-
+    'use strict';
     let britney = document.querySelector('#britneySpears');
     let gameBoard = document.querySelector('#gameBoundary');
     let missile = document.querySelector('#missile');
+    let targetExplosion = document.querySelector('#targetExplosion');
     const MAX_LEFT = 250;
     const MIN_LEFT = 15;
     const MIN_TOP = 20;
@@ -12,6 +13,14 @@
 
     let movementInterval = setInterval(moveBritney, 50);
     addKeyListeners();
+
+    function showTargetExplosion() {
+        targetExplosion.style.display = 'block';
+        //hide image again after 500ms
+        window.setTimeout(function () {
+            targetExplosion.style.display = 'none';
+        }, 500);
+    }
 
     function addKeyListeners() {
         const ENTER_KEY = 13;
@@ -35,12 +44,15 @@
         let shootMissileInterval = setInterval(function () {
             if (currentTop < MIN_TOP) {
                 clearInterval(shootMissileInterval);
+                if (calculateDistanceBetweenMissileAndTarget() < 28 ) {
+                    showTargetExplosion();
+                } else {
+                    alert('you missed' + calculateDistanceBetweenMissileAndTarget());
+                }
+                currentTop = 290;
             }
             currentTop -= 10;
             missile.style.top = currentTop;
-
-            //if distance < 15
-            //then target is hit
 
         }, 20);
     }
@@ -60,20 +72,30 @@
         }
     }
     function getCurrentTargetTop() {
-        return parseInt(britney.style.top.replace('px', '')) || 0;
+        return (parseInt(britney.style.top.replace('px', '')) || 0);
     }
 
     function getCurrentTargetLeft() {
-        return parseInt(britney.style.left.replace('px', '')) || 0;
+        return (parseInt(britney.style.left.replace('px', '')) || 0);
+    }
+
+    function getCurrentTargetMidpointLeft() {
+        //add 25px because the target is 50px wide so 25px is middle of it
+        return getCurrentTargetLeft() + 25;
     }
 
     function getCurrentMissileLeft() {
         return  parseInt(missile.style.left.replace('px', '')) || 0;
     }
 
-    function calculateDistance() {
-        let xDist = Math.pow(getCurrentMissileLeft() - getCurrentTargetLeft(), 2);
-        // let yDist = Math.pow(miss)
+    function  getCurrentMissileTop() {
+        return parseInt(missile.style.top.replace('px', '')) || 0;
+    }
+
+    function calculateDistanceBetweenMissileAndTarget() {
+        let xDist = Math.pow(getCurrentMissileLeft() - getCurrentTargetMidpointLeft(), 2);
+        //assume that the missile is at the same height as the target
+        let yDist = 0;
         return Math.sqrt(xDist + yDist);
     }
 
