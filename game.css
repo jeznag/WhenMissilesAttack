@@ -19,11 +19,11 @@
 }
 
 #missile {
-    position: relative;
-    bottom: 1px;
+    position: absolute;
+    top: 280px;
+    left: 100px;
     background-color: black;
     width: 10px;
     height: 30px;
     border-radius: 1px;
-    align-self: flex-end;
 }
